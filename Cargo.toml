@@ -4,7 +4,10 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+ggez = "0.6"
+glam = "0.20"
+mint = "0.5"
 
 [[bin]]
 name = "flightsimulator"
-path = "main.rs"
+path = "src/main.rs"
