@@ -14,6 +14,7 @@ pub struct FlightSimulator {
     thrust: f32,
     lift: f32,
     plane_image: Image,
+    tunnel_x: f32,
 }
 
 impl FlightSimulator {
@@ -29,6 +30,7 @@ impl FlightSimulator {
             thrust: 0.0,
             lift: 0.0,
             plane_image,
+            tunnel_x: 500.0,
         }
     }
 
@@ -104,6 +106,14 @@ impl event::EventHandler<ggez::GameError> for FlightSimulator {
             self.crashed = true;
         }
 
+        self.tunnel_x -= 2.0; // Move left
+
+// Reset tunnel position when off-screen
+        if self.tunnel_x < -100.0 {
+        self.tunnel_x = 1280.0;
+        }  
+
+
         Ok(())
     }
 
@@ -176,11 +186,11 @@ impl event::EventHandler<ggez::GameError> for FlightSimulator {
             Point2{x: 1100.0, y: 650.0},
         ];
 
-        for (x,y) in tree.positions.iter(){
+        for tree_pos in tree_positions.iter(){
         let trunk = Mesh::new_rectangle(
             ctx,
             graphics::DrawMode::fill(),
-            graphics::Rect::new(100.0, 650.0, 20.0, 50.0),
+            graphics::Rect::new(tree_pos.x, tree_pos.y, 20.0, 50.0),
             Color::from_rgb(139, 69, 19),
         )?;
         graphics::draw(ctx, &trunk, DrawParam::default())?;
@@ -188,11 +198,35 @@ impl event::EventHandler<ggez::GameError> for FlightSimulator {
         let foliage = Mesh::new_rectangle(
             ctx,
             graphics::DrawMode::fill(),
-            Point2{x: x + 5.0, y: y - 20.0},
+            graphics::Rect::new(tree_pos.x + 10.0,tree_pos.y - 20.0, 50.0, 50.0),
             Color::from_rgb(34, 139, 34),
         )?;
         graphics::draw(ctx, &foliage, DrawParam::default())?;
         }
+
+        let left_wall = Mesh::new_rectangle(
+            ctx,
+            graphics::DrawMode::fill(),
+            graphics::Rect::new(0.0, 0.0, 10.0, 720.0),
+            Color::from_rgb(100, 100, 100),
+        )?;
+        graphics::draw(ctx, &left_wall, DrawParam::default())?;
+
+        let right_wall = Mesh::new_rectangle(
+            ctx,
+            graphics::DrawMode::fill(),
+            graphics::Rect::new(1270.0, 0.0, 10.0, 720.0),
+            Color::from_rgb(100, 100, 100),
+        )?;
+        graphics::draw(ctx, &right_wall, DrawParam::default())?;
+
+        // Tunnel collision detection
+        if (self.plane_pos.x > 300.0 && self.plane_pos.x < 350.0 && self.plane_pos.y > 200.0 && self.plane_pos.y < 600.0) ||
+            (self.plane_pos.x > 800.0 && self.plane_pos.x < 850.0 && self.plane_pos.y > 200.0 && self.plane_pos.y < 600.0) {
+            self.crashed = true; // Plane crashes if it hits the tunnel walls
+        }
+
+
 
         // 4️⃣ **Draw Plane**
         if !self.crashed {
