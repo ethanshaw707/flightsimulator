@@ -1,9 +1,11 @@
 mod physics;
+mod obstacles;
 
 
 use ggez::{ContextBuilder, GameResult};
 use ggez::conf::WindowMode;
 use physics::FlightSimulator;
+
 
 
 fn main() -> GameResult {
