@@ -135,6 +135,65 @@ impl event::EventHandler<ggez::GameError> for FlightSimulator {
         )?;
         graphics::draw(ctx, &ground, DrawParam::default())?;
 
+        // Mountains 
+        let mountain_color1 = Color::from_rgb(139, 69, 19);
+        let mountain1 = Mesh::new_polygon(
+            ctx,
+            graphics::DrawMode::fill(),
+            &[
+                Point2{x: 0.0, y: 650.0},
+                Point2{x: 200.0, y: 450.0},
+                Point2{x: 400.0, y: 650.0},
+            ],
+            mountain_color1,
+        )?;
+        graphics::draw(ctx, &mountain1, DrawParam::default())?;
+
+        let mountain_color2 = Color::from_rgb(139, 69, 19);
+        let mountain2 = Mesh::new_polygon(
+            ctx, 
+            graphics::DrawMode::fill(),
+            &[
+                Point2{x: 400.0, y: 650.0},
+                Point2{x: 600.0, y: 500.0},
+                Point2{x: 800.0, y: 650.0},
+            ],
+            mountain_color2
+        )?;
+        graphics::draw(ctx, &mountain2, DrawParam::default())?;
+
+        // Trees
+        let tree_positions = [
+            Point2{x: 100.0, y: 650.0},
+            Point2{x: 200.0, y: 650.0},
+            Point2{x: 300.0, y: 650.0},
+            Point2{x: 500.0, y: 650.0},
+            Point2{x: 600.0, y: 650.0},
+            Point2{x: 700.0, y: 650.0},
+            Point2{x: 800.0, y: 650.0},
+            Point2{x: 900.0, y: 650.0},
+            Point2{x: 1000.0, y: 650.0},
+            Point2{x: 1100.0, y: 650.0},
+        ];
+
+        for (x,y) in tree.positions.iter(){
+        let trunk = Mesh::new_rectangle(
+            ctx,
+            graphics::DrawMode::fill(),
+            graphics::Rect::new(100.0, 650.0, 20.0, 50.0),
+            Color::from_rgb(139, 69, 19),
+        )?;
+        graphics::draw(ctx, &trunk, DrawParam::default())?;
+
+        let foliage = Mesh::new_rectangle(
+            ctx,
+            graphics::DrawMode::fill(),
+            Point2{x: x + 5.0, y: y - 20.0},
+            Color::from_rgb(34, 139, 34),
+        )?;
+        graphics::draw(ctx, &foliage, DrawParam::default())?;
+        }
+
         // 4️⃣ **Draw Plane**
         if !self.crashed {
             graphics::draw(

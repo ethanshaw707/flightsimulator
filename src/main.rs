@@ -5,7 +5,7 @@ mod obstacles;
 use ggez::{ContextBuilder, GameResult};
 use ggez::conf::WindowMode;
 use physics::FlightSimulator;
-use ggez::{event, ContextBuilder, GameResult};
+use ggez::event;
 
 
 
