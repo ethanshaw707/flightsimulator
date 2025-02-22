@@ -1,32 +1,23 @@
 # Overview
 
 {Important! Do not say in this section that this is college assignment. Talk about what you are trying to accomplish as a software engineer to further your learning.}
+This is a program of a Flight Simulator. We built this to learn about Rust, and learn more about the equations and the technical abilities required for coding in aviation. We have made a plane that is flying, and the user is able to simulate the flight. 
 
-{Provide a description of the software that you wrote to demonstrate the Rust language.}
-
-{Describe your purpose for writing this software.}
-
-{Provide a link to your YouTube demonstration. It should be a 4-5 minute demo of the software running and a walkthrough of the code. Focus should be on sharing what you learned about the language syntax.}
-
-[Software Demo Video](http://youtube.link.goes.here)
 
 # Development Environment
-
-{Describe the tools that you used to develop the software}
-
-{Describe the programming language that you used and any libraries.}
+Cargo Watch- We used this in order to live update the program, which was very helpful
+Rust- Programming language designed for operating systems and game engines. 
 
 # Useful Websites
 
-{Make a list of websites that you found helpful in this project}
 
-- [Web Site Name](http://url.link.goes.here)
-- [Web Site Name](http://url.link.goes.here)
+- https://www.rust-lang.org/
+- https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/flight-equations-with-drag/
 
 # Future Work
 
 {Make a list of things that you need to fix, improve, and add in the future.}
 
-- Item 1
-- Item 2
-- Item 3
+- We can improve on the physics of the plane, making the movement more airplane like
+- We can improve on the scenary, making it more realistic.
+- We can improve on the design of the code, making more files with a better structural design. 
