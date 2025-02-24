@@ -1,6 +1,5 @@
 # Overview
 
-{Important! Do not say in this section that this is college assignment. Talk about what you are trying to accomplish as a software engineer to further your learning.}
 This is a program of a Flight Simulator. We built this to learn about Rust, and learn more about the equations and the technical abilities required for coding in aviation. We have made a plane that is flying, and the user is able to simulate the flight. 
 
 

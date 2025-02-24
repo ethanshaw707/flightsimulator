@@ -91,7 +91,8 @@ impl event::EventHandler<ggez::GameError> for FlightSimulator {
 
         self.compute_forces();
         let thrust_vector = Vec2::new(self.plane_angle.cos(), -self.plane_angle.sin()) * self.thrust;
-        let pitch_vector = Vec2::new(0.0, pitch); 
+        let pitch_vector = Vec2::new(self.plane_angle.sin() * pitch, -self.plane_angle.cos() * pitch);
+
         self.plane_velocity += thrust_vector + pitch_vector;
 
         self.plane_velocity *= 1.0 - AIR_RESISTANCE;
