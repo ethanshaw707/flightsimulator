@@ -222,10 +222,17 @@ impl event::EventHandler<ggez::GameError> for FlightSimulator {
         graphics::draw(ctx, &right_wall, DrawParam::default())?;
 
         // Tunnel collision detection
-        if (self.plane_pos.x > 300.0 && self.plane_pos.x < 350.0 && self.plane_pos.y > 200.0 && self.plane_pos.y < 600.0) ||
-            (self.plane_pos.x > 800.0 && self.plane_pos.x < 850.0 && self.plane_pos.y > 200.0 && self.plane_pos.y < 600.0) {
-            self.crashed = true; // Plane crashes if it hits the tunnel walls
-        }
+        let (width, height) = ggez::graphics::drawable_size(ctx);
+let plane_size = 50.0 * 0.03; // Adjust this based on your new scale
+
+if self.plane_pos.x < plane_size
+    || self.plane_pos.x > width - plane_size
+    || self.plane_pos.y < plane_size
+    || self.plane_pos.y > height - plane_size
+{
+    self.crashed = true;
+}
+
 
 
 
@@ -241,7 +248,7 @@ impl event::EventHandler<ggez::GameError> for FlightSimulator {
                     })
                     .rotation(self.plane_angle)
                     .offset(Point2 { x: 0.5, y: 0.5 })
-                    .scale([0.05, 0.05]), 
+                    .scale([0.02, 0.02]), 
             )?;
         } else {
             // 5️⃣ **Crash Message**
