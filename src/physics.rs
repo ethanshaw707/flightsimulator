@@ -106,7 +106,8 @@ impl event::EventHandler<ggez::GameError> for FlightSimulator {
         {
             self.crashed = true;
         }
-
+        
+        // tunnel
         self.tunnel_x -= 2.0; // Move left
 
 // Reset tunnel position when off-screen
@@ -146,28 +147,79 @@ impl event::EventHandler<ggez::GameError> for FlightSimulator {
         )?;
         graphics::draw(ctx, &ground, DrawParam::default())?;
 
+        let sun_x = (ggez::timer::time_since_start(ctx).as_secs_f32() * 50.0) % 1280.0; 
+        let sun = Mesh::new_circle(
+        ctx,
+        graphics::DrawMode::fill(),
+        Point2 { x: sun_x, y: 100.0 }, // Moves across the sky
+        40.0,
+        2.0,
+        Color::from_rgb(255, 223, 0), // Bright yellow
+        )?;
+        graphics::draw(ctx, &sun, DrawParam::default())?;
+
         // Mountains 
-        let mountain_color1 = Color::from_rgb(139, 69, 19);
+        //let mountain_color1 = Color::from_rgb(139, 69, 19);
+
+        let sun_factor = (sun_x / 1280.0).clamp(0.0, 1.0);
+
+        let mountain_dynamic_shadow = Mesh::new_polygon(
+        ctx,
+        graphics::DrawMode::fill(),
+        &[
+        Point2 { x: 100.0, y: 650.0 }, 
+        Point2 { x: 250.0 + 50.0 * sun_factor, y: 500.0 },
+        Point2 { x: 320.0 + 40.0 * sun_factor, y: 460.0 },
+        Point2 { x: 400.0, y: 500.0 },
+        Point2 { x: 550.0, y: 650.0 },
+        ],
+        Color::from_rgb(80, 40, 20), // Darker brown shadow
+        )?;
+        graphics::draw(ctx, &mountain_dynamic_shadow, DrawParam::default())?;
+
+
         let mountain1 = Mesh::new_polygon(
             ctx,
             graphics::DrawMode::fill(),
             &[
-                Point2{x: 0.0, y: 650.0},
-                Point2{x: 200.0, y: 450.0},
-                Point2{x: 400.0, y: 650.0},
+                Point2 { x: 100.0, y: 650.0 }, // Base left
+                Point2 { x: 250.0, y: 500.0 }, // Mid slope
+                Point2 { x: 300.0, y: 470.0 }, // Near peak (smooth transition)
+                Point2 { x: 320.0, y: 460.0 }, // Peak
+                Point2 { x: 340.0, y: 470.0 }, // Near peak (smooth transition)
+                Point2 { x: 400.0, y: 500.0 }, // Mid slope
+                Point2 { x: 550.0, y: 650.0 }, // Base right
             ],
-            mountain_color1,
+            //mountain_color1,
+            Color::from_rgb(139, 69, 19),
         )?;
         graphics::draw(ctx, &mountain1, DrawParam::default())?;
+
+        let mountain_sunlight1 = Mesh::new_polygon(
+            ctx,
+            graphics::DrawMode::fill(),
+            &[
+                Point2 { x: 300.0, y: 470.0 },
+                Point2 { x: 320.0, y: 460.0 }, // Peak
+                Point2 { x: 340.0, y: 470.0 },
+                Point2 { x: 400.0, y: 500.0 },
+            ],
+            Color::from_rgb(160, 100, 50), // Lighter brown for sunlight
+        )?;
+        graphics::draw(ctx, &mountain_sunlight1, DrawParam::default())?;
 
         let mountain_color2 = Color::from_rgb(139, 69, 19);
         let mountain2 = Mesh::new_polygon(
             ctx, 
             graphics::DrawMode::fill(),
             &[
-                Point2{x: 400.0, y: 650.0},
-                Point2{x: 600.0, y: 500.0},
-                Point2{x: 800.0, y: 650.0},
+                Point2 { x: 650.0, y: 650.0 }, // Base left
+                Point2 { x: 750.0, y: 500.0 }, // Mid slope
+                Point2 { x: 800.0, y: 470.0 }, // Near peak (smooth transition)
+                Point2 { x: 820.0, y: 460.0 }, // Peak
+                Point2 { x: 840.0, y: 470.0 }, // Near peak (smooth transition)
+                Point2 { x: 900.0, y: 500.0 }, // Mid slope
+                Point2 { x: 1050.0, y: 650.0 }, // Base right
             ],
             mountain_color2
         )?;
@@ -187,24 +239,52 @@ impl event::EventHandler<ggez::GameError> for FlightSimulator {
             Point2{x: 1100.0, y: 650.0},
         ];
 
-        for tree_pos in tree_positions.iter(){
-        let trunk = Mesh::new_rectangle(
-            ctx,
-            graphics::DrawMode::fill(),
-            graphics::Rect::new(tree_pos.x, tree_pos.y, 20.0, 50.0),
-            Color::from_rgb(139, 69, 19),
-        )?;
-        graphics::draw(ctx, &trunk, DrawParam::default())?;
-
-        let foliage = Mesh::new_rectangle(
-            ctx,
-            graphics::DrawMode::fill(),
-            graphics::Rect::new(tree_pos.x + 10.0,tree_pos.y - 20.0, 50.0, 50.0),
-            Color::from_rgb(34, 139, 34),
-        )?;
-        graphics::draw(ctx, &foliage, DrawParam::default())?;
+        for tree_pos in tree_positions.iter() {
+            let shadow_offset = (640.0 - sun_x) * 0.05; // Shadows move opposite the sun
+            let shadow_length = (1.0 - (sun_x / 1280.0)) * 20.0; // Shadows stretch when sun is lower
+        
+            let tree_shadow = Mesh::new_ellipse(
+                ctx,
+                graphics::DrawMode::fill(),
+                Point2 { x: tree_pos.x + shadow_offset, y: 680.0 }, // Moves dynamically
+                30.0 + shadow_length, // Dynamic width
+                8.0, 
+                2.0, 
+                Color::from_rgba(50, 50, 50, 150), // Darker at sunset
+            )?;
+            graphics::draw(ctx, &tree_shadow, DrawParam::default())?;
+        
+            // Tree trunk
+            let trunk = Mesh::new_rectangle(
+                ctx,
+                graphics::DrawMode::fill(),
+                graphics::Rect::new(tree_pos.x, tree_pos.y, 20.0, 50.0),
+                Color::from_rgb(139, 69, 19),
+            )?;
+            graphics::draw(ctx, &trunk, DrawParam::default())?;
+        
+            // Tree foliage shading based on sun position
+            let tree_light_factor = ((tree_pos.x - sun_x) / 300.0).clamp(-1.0, 1.0);
+            let foliage_color = Color::from_rgb(
+                (34.0 + 40.0 * tree_light_factor.abs()) as u8,
+                (139.0 + 30.0 * tree_light_factor.abs()) as u8,
+                34,
+            );
+        
+            let foliage = Mesh::new_circle(
+                ctx,
+                graphics::DrawMode::fill(),
+                Point2 { x: tree_pos.x + 10.0, y: tree_pos.y - 20.0 },
+                30.0,
+                2.0,
+                foliage_color,
+            )?;
+            graphics::draw(ctx, &foliage, DrawParam::default())?;
         }
+        
 
+    
+        // Tunnel info
         let left_wall = Mesh::new_rectangle(
             ctx,
             graphics::DrawMode::fill(),
@@ -216,7 +296,7 @@ impl event::EventHandler<ggez::GameError> for FlightSimulator {
         let right_wall = Mesh::new_rectangle(
             ctx,
             graphics::DrawMode::fill(),
-            graphics::Rect::new(1270.0, 0.0, 10.0, 720.0),
+            graphics::Rect::new(0.0, 0.0, 10.0, 720.0),
             Color::from_rgb(100, 100, 100),
         )?;
         graphics::draw(ctx, &right_wall, DrawParam::default())?;
