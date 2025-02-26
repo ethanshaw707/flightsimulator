@@ -6,12 +6,16 @@ This is a program of a Flight Simulator. We built this to learn about Rust, and 
 # Development Environment
 Cargo Watch- We used this in order to live update the program, which was very helpful
 Rust- Programming language designed for operating systems and game engines. 
+Glam- Controls the graphics and vecors of the game
+Mint- Library for mathametical functions
+GGEZ- Library to make games in Rust
 
 # Useful Websites
 
 
 - https://www.rust-lang.org/
 - https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/flight-equations-with-drag/
+
 
 # Future Work
 
