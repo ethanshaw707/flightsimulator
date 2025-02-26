@@ -132,9 +132,11 @@ impl event::EventHandler<ggez::GameError> for FlightSimulator {
         graphics::draw(ctx, &sky_gradient, DrawParam::default())?;
 
         // 2️⃣ **Clouds**
-        let cloud_color = Color::new(1.0, 1.0, 1.0, 0.5);
-        let cloud1 = Mesh::new_rectangle(ctx, graphics::DrawMode::fill(), graphics::Rect::new(300.0, 150.0, 200.0, 80.0), cloud_color)?;
-        let cloud2 = Mesh::new_rectangle(ctx, graphics::DrawMode::fill(), graphics::Rect::new(800.0, 250.0, 250.0, 90.0), cloud_color)?;
+        let cloud_color = Color::new(1.0, 1.0, 1.0, 0.5);  //300.0 for x
+        let cloud1_x = (ggez::timer::time_since_start(ctx).as_secs_f32() * 10.0) % 1280.0;
+        let cloud2_x = ((ggez::timer::time_since_start(ctx).as_secs_f32() * 15.0) + 500.0) % 1280.0;
+        let cloud1 = Mesh::new_rectangle(ctx, graphics::DrawMode::fill(), graphics::Rect::new(cloud1_x, 150.0, 200.0, 80.0), cloud_color)?;
+        let cloud2 = Mesh::new_rectangle(ctx, graphics::DrawMode::fill(), graphics::Rect::new(cloud2_x, 250.0, 250.0, 90.0), cloud_color)?;
         graphics::draw(ctx, &cloud1, DrawParam::default())?;
         graphics::draw(ctx, &cloud2, DrawParam::default())?;
 
